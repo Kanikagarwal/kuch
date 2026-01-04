@@ -1,0 +1,43 @@
+/* Soft pastel animated gradient */
+@import "tailwindcss";
+.friendship-bg {
+  background: linear-gradient(
+    120deg,
+    #cdb4db,
+    #ffc8dd,
+    #bde0fe,
+    #fff1e6
+  );
+  background-size: 300% 300%;
+  animation: softGradient 20s ease infinite;
+}
+
+/* Subtle floating dots */
+.friendship-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  animation: floatDot linear infinite;
+}
+
+@keyframes softGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes floatDot {
+  from {
+    transform: translateY(110vh) scale(0.8);
+  }
+  to {
+    transform: translateY(-10vh) scale(1.2);
+  }
+}
+
+
+*{
+  font-family: "Quicksand", sans-serif;
+}
