@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 const videos = [
   "https://res.cloudinary.com/ddvevjjoh/video/upload/v1767543867/vid9_aadqsr.mp4",
@@ -11,78 +11,32 @@ const videos = [
 const MemoryVideos = () => {
   const containerRef = useRef(null);
   const videoRefs = useRef([]);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const autoScrollRef = useRef(null);
 
-  // 🔹 Detect center video
-  const detectCenterVideo = () => {
-    const container = containerRef.current;
-    const center = container.scrollLeft + container.offsetWidth / 2;
-
-    let closestIndex = 0;
-    let minDistance = Infinity;
-
-    videoRefs.current.forEach((video, index) => {
-      if (!video) return;
-
-      const parent = video.parentElement;
-      const videoCenter = parent.offsetLeft + parent.offsetWidth / 2;
-
-      const distance = Math.abs(center - videoCenter);
-      if (distance < minDistance) {
-        minDistance = distance;
-        closestIndex = index;
-      }
-    });
-
-    setActiveIndex(closestIndex);
-  };
-
-  // 🔹 Play only active video (muted autoplay)
+  // 🔹 Autoplay ALL videos muted on mount
   useEffect(() => {
-    videoRefs.current.forEach((video, index) => {
+    videoRefs.current.forEach((video) => {
       if (!video) return;
 
-      if (index === activeIndex) {
-        video.muted = true;
-        video.loop = true;
-        video.play().catch(() => {});
-      } else {
-        video.pause();
-        video.currentTime = 0;
-      }
+      video.muted = true;
+      video.loop = true;
+      video.playsInline = true;
+      video.play().catch(() => {});
     });
-  }, [activeIndex]);
+  }, []);
 
   // 🔹 Auto-scroll horizontally
   useEffect(() => {
-    const container = containerRef.current;
-
-    autoScrollRef.current = setInterval(() => {
-      if (!container) return;
-      container.scrollBy({ left: 320, behavior: "smooth" });
-
-      // Update center video after scroll
-      setTimeout(detectCenterVideo, 500);
+    const interval = setInterval(() => {
+      if (containerRef.current) {
+        containerRef.current.scrollBy({
+          left: 320,
+          behavior: "smooth",
+        });
+      }
     }, 4000);
 
-    return () => clearInterval(autoScrollRef.current);
+    return () => clearInterval(interval);
   }, []);
-
-  // 🔹 Handle manual scroll
-  const handleScroll = () => {
-    detectCenterVideo();
-    clearInterval(autoScrollRef.current); // stop auto-scroll when user scrolls manually
-  };
-
-  // 🔊 Enable sound on click
-  const enableSound = (index) => {
-    const video = videoRefs.current[index];
-    if (!video) return;
-
-    video.muted = false;
-    video.play();
-  };
 
   return (
     <div className="w-full py-12">
@@ -92,7 +46,6 @@ const MemoryVideos = () => {
 
       <div
         ref={containerRef}
-        onScroll={handleScroll}
         className="flex gap-6 overflow-x-auto px-6 snap-x snap-mandatory scrollbar-hide"
       >
         {videos.map((video, index) => (
@@ -104,18 +57,12 @@ const MemoryVideos = () => {
               muted
               loop
               playsInline
-              onClick={() => enableSound(index)}
-              className={`w-full aspect-9/16 rounded-2xl shadow-xl bg-black transition-all duration-500 cursor-pointer ${
-                index === activeIndex
-                  ? "scale-105 ring-4 ring-pink-300"
-                  : "scale-95 opacity-80"
-              }`}
+              preload="auto"
+              className="w-full aspect-9/16 rounded-2xl shadow-xl bg-black scale-95"
             />
           </div>
         ))}
       </div>
-
-     
     </div>
   );
 };
