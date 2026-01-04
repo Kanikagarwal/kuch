@@ -1,5 +1,5 @@
 import React from 'react'
-import FriendshipBackground from '../Pages/FriendshipBackground.jsx'
+import FriendshipBackground from './FriendshipBackground.jsx'
 
 const Landing = ({goToNext}) => {
   // const handleStart = () => {

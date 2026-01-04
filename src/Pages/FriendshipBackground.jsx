@@ -1,5 +1,5 @@
 import React from 'react';
-import FloatingDots from '../Pages/FloatingDots.jsx';
+import FloatingDots from './FloatingDots.jsx';
 const FriendshipBackground = ({ children }) => {
   return (
     <div className="relative min-h-screen friendship-bg overflow-hidden">
